@@ -1,0 +1,182 @@
+---
+title: "SAD Projekt 1 - Sprawozdanie"
+author: "Michal Szpunar, Daniel Adamkowski"
+date: "30 11 2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(dplyr)
+
+dir <- 'C:/Users/mszpu/Studia/SAD/projekt'
+setwd(dir)
+
+```
+
+
+
+
+
+## Zadanie 1
+
+### Przygotowanie danych
+
+Analizę dokonano dla zbioru danych z lipca 2021 roku.
+Poniżej przedstawiono procedurę wczytania oraz oznaczenia danych:
+```{r load}
+schema <- c(
+  'station_id',
+  'station_name',
+  'year',
+  'month',
+  'day',
+  'max_daily_temp',
+  'meas_status_TMAX',
+  'min_daily_temp',
+  'meas_status_TMIN',
+  'mean_daily_temp',
+  'meas_status_STD',
+  'min_temp_near_ground',
+  'meas_status_TMNG',
+  'daily_rainfall',
+  'meas_status_SMDB',
+  'rainfall_type',
+  'snow_cover_height',
+  'meas_status_PKSN'
+  
+)
+
+df <- read.csv('./data/2021_07_k/k_d_07_2021.csv', header=FALSE)
+colnames(df) <- schema
+```
+
+
+
+Następnie stworzono kolumny zawierające różnice pomiędzy maksymalnymi oraz średnimi temperaturami z następujących po sobie dni. W tym celu użyto operacji przekształceń danych dostępnych w bibliotece _dplyr_.
+```{r lag}
+library(dplyr)
+df <- df %>% group_by(station_name) %>% mutate(max_temp_diff = max_daily_temp - lag(max_daily_temp))
+df <- df %>% group_by(station_name) %>% mutate(mean_temp_diff = mean_daily_temp - lag(mean_daily_temp))
+```
+
+W celu usunięcia wartości _NaN_, zastąpiono je zerami.
+```{r nans_rm}
+df$max_temp_diff[is.na(df$max_temp_diff)] <- 0
+df$mean_temp_diff[is.na(df$mean_temp_diff)] <- 0
+```
+
+### Analiza wybranych punktów pomiarowych
+
+Celem zadania było dokonanie porównania wybranych charakterystyk pogodowych z trzech odległych punktów pomiarowych. Wybrano następujące punkty pomiarowe:
+
+* **PSZCZYNA**
+* **GDAŃSK RĘBIECHOWO**
+* **WARSZAWA-FILTRY**
+
+```{r locs, echo=FALSE}
+loc1 <- df[df$station_name == 'PSZCZYNA', ]
+loc2 <- df[df$station_name == 'GDAŃSK-RĘBIECHOWO', ]
+loc3 <- df[df$station_name == 'WARSZAWA-FILTRY', ]
+```
+
+Na początek zdecydowano się obliczyć średnie:
+
+* maksymalne dobowe temperatury
+* dobowe wahania temperatury
+* wahania maksymalnej dobowej temperatury z dnia na dzień
+
+```{r metrics}
+mean_temps <- c()
+mean_stabilities <- c()
+mean_diffs <- c()
+
+for (l in list(loc1, loc2, loc3)){
+  mean_temps <- c(mean_temps, mean(l$max_daily_temp))
+  mean_stabilities <- c(
+    mean_stabilities,
+    mean(l$max_daily_temp - l$min_daily_temp)
+  )
+  mean_diffs <- c(mean_diffs, mean(l$max_temp_diff))
+}
+
+```
+
+Otrzymano następujące wyniki (w kolejności PSZCZYNA - GDAŃSK - WARSZAWA)
+```{r metrics_show}
+# srednia temperatura w kazdym z punktow pomiarowych
+mean_temps
+
+# srednie dobowe wahania temperatury
+mean_stabilities
+
+# srednie roznice pomiedzy maksymalnymi temp. z dnia na dzien
+mean_diffs
+```
+
+Obliczone statystyki wskazują na to, że średnio w **Warszawie** było **najcieplej**, natomiast **najstabilniejsza dobowa temperatura** była w **Gdańsku**. 
+Aby jednak potwierdzić te hipotezy, stworzono wykresy pudełkowe opisujące w sposób obrazowy zapisane obserwacje. 
+
+Wykresy te przedstawiono poniżej: 
+
+```{r boxplots, echo=FALSE}
+all_locs <- rbind(loc1, loc2, loc3)
+boxplot(max_daily_temp ~ station_name, data = all_locs, xlab = NULL, ylab = 'Maksymalna dobowa temperatura [*C]', col='brown1')
+boxplot(max_daily_temp - min_daily_temp ~ station_name, data = all_locs, xlab = NULL, ylab='Dobowe wahanie temperatur [*C]', col='cornflowerblue')
+boxplot(max_temp_diff ~ station_name, data = all_locs, xlab = NULL, ylab = 'Wahania maksymalnej dobowej temperatury [*C]', col='lightgoldenrod1')
+```
+
+Na podstawie powyższych wykresów można stwierdzić, że:
+
+* rzeczywiście w Warszawie maksymalna temperatura przeważnie jest najwyższa. Najniższa temperatura notowana jest w Gdańsku.
+* największa dobowa różnica temperatur występuje w Pszczynie, natomiast najniższa w Gdańsku
+* różnice pomiędzy maksymalnymi temperaturami w następujących po sobie dniach we wszystkich stacjach pomiarowych są do siebie zbliżone, zatem ciężko wskazać stację, w której notowania są najwyższe
+
+
+### Badanie rozkładu wahań temperatury "z dnia na dzień"
+
+W tej części zadania wybrano stację pomiarową **WARSZAWA-FILTRY**. Na początek stworzono histogram różnic temperatur z dnia na dzień:
+
+```{r hist, echo=FALSE}
+x <- loc3$mean_temp_diff
+
+h <- hist(x, breaks = 10, density = 10,
+          col = "black", xlab = "Różnica temperatur [*C]", ylab = 'Częstość występowania', main = 'Histogram wahań temperatury "Z dnia na dzień"') 
+
+```
+
+
+Widać, że przypomina kształtem krzywą dzwonową rozkładu Gaussa. Dokonano zatem aproksymacji rozkładu wahań temperatury używając jako modelu rozkładu normalnego. Za wartość oczekiwaną oraz wariancję rozkładu przyjęto średnią oraz wariancję z próby. Na koniec zamieniono funkcję gęstości prawdopodobieństwa na funkcję częstotliwości. 
+
+```{r gauss}
+linespace <- seq(min(x), max(x), length = 100) 
+yfit <- dnorm(linespace, mean = mean(x), sd = sd(x)) 
+# converting probability density into frequency function
+yfit <- yfit * diff(h$mids[1:2]) * length(x) 
+
+```
+
+
+W wyniku powyższego skryptu otrzymano następującą krzywą:
+```{r plot_gauss, echo=FALSE}
+x <- loc3$mean_temp_diff
+
+h <- hist(x, breaks = 10, density = 10,
+          col = "black", xlab = "Różnica temperatur [*C]", ylab = 'Częstość występowania', main = 'Oszacowanie rozkładu wahań temperatury') 
+
+linespace <- seq(min(x), max(x), length = 100) 
+yfit <- dnorm(linespace, mean = mean(x), sd = sd(x)) 
+# converting probability density into frequency function
+yfit <- yfit * diff(h$mids[1:2]) * length(x) 
+
+lines(linespace, yfit, col = "red", lwd = 3)
+
+```
+
+Po graficznej analizie otrzymanych wyników stwierdzono, że rozkład normalny w dobry sposób oddaje charakterystykę badanej próby.
+
+**Według otrzymanego rozkładu prawdopodobieństwa stwierdzenie "jutro będzie tak samo ciepło jak dziś" jest wysoce prawdopodobne**.

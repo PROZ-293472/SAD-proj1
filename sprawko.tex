@@ -1,0 +1,168 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={SAD Projekt 1 - Sprawozdanie},
+  pdfauthor={Michal Szpunar, Daniel Adamkowski},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{SAD Projekt 1 - Sprawozdanie}
+\author{Michal Szpunar, Daniel Adamkowski}
+\date{30 11 2021}
+
+\begin{document}
+\maketitle
+
+\hypertarget{zadanie-1}{%
+\subsection{Zadanie 1}\label{zadanie-1}}
+
+Analizę dokonano dla zbioru danych z lipca 2021 roku. Poniżej
+przedstawiono procedurę wczytania oraz oznaczenia danych:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{schema }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{\textquotesingle{}station\_id\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}station\_name\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}month\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}day\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}max\_daily\_temp\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}meas\_status\_TMAX\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}min\_daily\_temp\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}meas\_status\_TMIN\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}mean\_daily\_temp\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}meas\_status\_STD\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}min\_temp\_near\_ground\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}meas\_status\_TMNG\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}daily\_rainfall\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}meas\_status\_SMDB\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}rainfall\_type\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}snow\_cover\_height\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}meas\_status\_PKSN\textquotesingle{}}
+  
+\NormalTok{)}
+
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{\textquotesingle{}./data/2021\_07\_k/k\_d\_07\_2021.csv\textquotesingle{}}\NormalTok{, }\AttributeTok{header=}\ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{colnames}\NormalTok{(df) }\OtherTok{\textless{}{-}}\NormalTok{ schema}
+\end{Highlighting}
+\end{Shaded}
+
+Następnie stworzono kolumny zawierające różnice pomiędzy maksymalnymi
+oraz średnimi temperaturami z następujących po sobie dni
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(station\_name) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{max\_temp\_diff =}\NormalTok{ max\_daily\_temp }\SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(max\_daily\_temp))}
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(station\_name) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{mean\_temp\_diff =}\NormalTok{ mean\_daily\_temp }\SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(mean\_daily\_temp))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{including-plots}{%
+\subsection{Including Plots}\label{including-plots}}
+
+You can also embed plots, for example:
+
+\includegraphics{sprawko_files/figure-latex/pressure-1.pdf}
+
+Note that the \texttt{echo\ =\ FALSE} parameter was added to the code
+chunk to prevent printing of the R code that generated the plot.
+
+\end{document}
