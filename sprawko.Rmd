@@ -180,3 +180,58 @@ lines(linespace, yfit, col = "red", lwd = 3)
 Po graficznej analizie otrzymanych wyników stwierdzono, że rozkład normalny w dobry sposób oddaje charakterystykę badanej próby.
 
 **Według otrzymanego rozkładu prawdopodobieństwa stwierdzenie "jutro będzie tak samo ciepło jak dziś" jest wysoce prawdopodobne**.
+
+
+## Zadanie 3
+
+
+```{r setup_zad3, include=FALSE}
+library(plyr)
+dfs_list <- list()
+for (i in c(1:12)){
+  f_dir <- sprintf("./data/2020_%02d_k/k_d_%02d_2020.csv", i, i)
+  dfs_list[[i]] <- read.csv(file = f_dir, header = FALSE)
+}
+
+
+df <- ldply(dfs_list, data.frame)
+colnames(df) <- schema
+
+
+df_tatry <- df[df$station_name == "DOLINA PIĘCIU STAWÓW", ]
+
+mean_snow_cover <- aggregate(df_tatry$snow_cover_height, list(df_tatry$month), mean)
+```
+
+Zdecydowano się zbadać wysokość pokrywy śnieżnej w ciągu roku w Tatrzańskim punkcie pomiarowym **Dolina Pięciu Stawów**. W tym celu sporządzono wykres pudełkowy zawierający dane pomiarowe z ostatniego roku. Na wykres naniesiono również wartości średnie dla każdego miesiąca. Wyniki przedstawiono poniżej:
+
+```{r snow_boxplot, echo=FALSE}
+boxplot(snow_cover_height ~ month, data = df_tatry, 
+        col='lightgoldenrod1', ylab='Wysokość pokrywy śnieżnej [cm]', xlab='Miesiąc',
+        main="Wykres wysokości pokrywy śnieżnej w Tatrach w 2020")
+lines(mean_snow_cover, type = 'b', col='brown1', lwd=3, pch=19, lty=2)
+```
+
+Widać, że w Tatrach śnieg utrzymywał na wysokim poziomie od stycznia do maja. Najwyższe pokrywy odnotowano w marcu, natomiast najniższe od lipca do września - wtedy punkt pomiarowy nie zanotował żadnej pokrywy śnieżnej.
+
+Ze względu na dużą liczbę outlierów, zdecydowano się w szczególny sposób przyjrzeć danym z czerwca. Wyniki przedstawiono na poniższym wykresie:
+
+
+```{r snow_june, echo=FALSE}
+tatry_june <- df_tatry[df_tatry$month == "6", ]
+
+plot(tatry_june$day, tatry_june$snow_cover_height, type = 'b', 
+     col='red', lwd=3, pch=15, lty=2, 
+     ylab="Wysokość pokrywy śnieżnej [cm]", xlab="Dzień", main= "Wysokość pokrywy śnieżnej w czerwcu 2020")
+
+```
+
+Powyższy wykres sugeruje, że na początku drugiego tygodnia czerwca śnieg gwałtownie stopniał, zatem okres, w którym nie notowano żadnej pokrywy śnieżnej zaczął się od drugiego tygodnia czerwca i trwał aż do końca września.
+
+```{r snow_dec, echo=FALSE, include=FALSE}
+tatry_dec <- df_tatry[df_tatry$month == "12", ]
+
+plot(tatry_dec$day, tatry_dec$snow_cover_height, type = 'b', 
+     col='red', lwd=3, pch=15, lty=2, 
+     ylab="Wysokość pokrywy śnieżnej [cm]", xlab="Dzień", main= "Wysokość pokrywy śnieżnej w grudniu 2020")
+```
