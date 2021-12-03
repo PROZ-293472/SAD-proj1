@@ -146,7 +146,7 @@ x <- loc3$mean_temp_diff
 
 h <- hist(x, breaks = 10, density = 10,
           col = "black", xlab = "Różnica temperatur [*C]", ylab = 'Częstość występowania',           main = 'Oszacowanie rozkładu wahań temperatury',
-          xaxt="n", grid=TRUE) 
+          xaxt="n") 
 
 axis(side=1,at=h$mids)
 

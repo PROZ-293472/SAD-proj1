@@ -1,4 +1,5 @@
 library(ggplot2)
+library(dplyr)
 
 setwd("C:\\Users\\danad\\Desktop\\repos\\studies\\S2 second-cycle\\SAD\\proj1")
 
