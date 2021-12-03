@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 
-dir <- 'C:\\Users\\danad\\Desktop\\repos\\SAD-proj1\\SAD-proj1'
+dir <- 'C:\\Users\\mszpu\\Studia\\SAD\\projekt'
 setwd(dir)
 
 ```
@@ -145,7 +145,10 @@ W tej części zadania wybrano stację pomiarową **WARSZAWA-FILTRY**. Na począ
 x <- loc3$mean_temp_diff
 
 h <- hist(x, breaks = 10, density = 10,
-          col = "black", xlab = "Różnica temperatur [*C]", ylab = 'Częstość występowania', main = 'Histogram wahań temperatury "Z dnia na dzień"') 
+          col = "black", xlab = "Różnica temperatur [*C]", ylab = 'Częstość występowania',           main = 'Oszacowanie rozkładu wahań temperatury',
+          xaxt="n", grid=TRUE) 
+
+axis(side=1,at=h$mids)
 
 ```
 
@@ -166,7 +169,9 @@ W wyniku powyższego skryptu otrzymano następującą krzywą:
 x <- loc3$mean_temp_diff
 
 h <- hist(x, breaks = 10, density = 10,
-          col = "black", xlab = "Różnica temperatur [*C]", ylab = 'Częstość występowania', main = 'Oszacowanie rozkładu wahań temperatury') 
+          col = "black", xlab = "Różnica temperatur [*C]", ylab = 'Częstość występowania',           main = 'Oszacowanie rozkładu wahań temperatury',
+          xaxt="n") 
+axis(side=1,at=h$mids)
 
 linespace <- seq(min(x), max(x), length = 100) 
 yfit <- dnorm(linespace, mean = mean(x), sd = sd(x)) 
@@ -188,7 +193,7 @@ Po graficznej analizie otrzymanych wyników stwierdzono, że rozkład normalny w
 
 Przygotowanie danych dotyczących wypadków w kolejnych kwartałach wymagało zakodowania dat w odpowiednim formacie i wyznaczenia na ich podstawie kwartałów.
 
-```{r prepare_quarters,}
+```{r prepare_quarters}
 catastrophes <- read.csv(file = "./data/katastrofy.csv")
 catastrophes$Date <- as.Date(catastrophes[["Date"]], format = "%m/%d/%Y")
 catastrophes$Quarters <- lubridate::quarter(catastrophes$Date, with_year = TRUE)
