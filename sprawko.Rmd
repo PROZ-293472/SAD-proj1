@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 
-dir <- 'C:/Users/mszpu/Studia/SAD/projekt'
+dir <- 'C:\\Users\\danad\\Desktop\\repos\\SAD-proj1\\SAD-proj1'
 setwd(dir)
 
 ```
@@ -180,6 +180,81 @@ lines(linespace, yfit, col = "red", lwd = 3)
 Po graficznej analizie otrzymanych wyników stwierdzono, że rozkład normalny w dobry sposób oddaje charakterystykę badanej próby.
 
 **Według otrzymanego rozkładu prawdopodobieństwa stwierdzenie "jutro będzie tak samo ciepło jak dziś" jest wysoce prawdopodobne**.
+
+
+## Zadanie 2
+
+### a) Badanie liczby katastrof
+
+Przygotowanie danych dotyczących wypadków w kolejnych kwartałach wymagało zakodowania dat w odpowiednim formacie i wyznaczenia na ich podstawie kwartałów.
+
+```{r prepare_quarters,}
+catastrophes <- read.csv(file = "./data/katastrofy.csv")
+catastrophes$Date <- as.Date(catastrophes[["Date"]], format = "%m/%d/%Y")
+catastrophes$Quarters <- lubridate::quarter(catastrophes$Date, with_year = TRUE)
+```
+
+Z przygotowanych danych możemy wygenerować histogram przedstawiający jak zmieniała się czestotliwość zdarzeń w następujących po sobie kwartałach.
+
+```{r quarters_hist, echo=FALSE}
+library(ggplot2)
+
+ggplot(catastrophes, aes(x = Quarters)) +
+  geom_histogram(binwidth = 1)
+```
+
+Jak widzimy na powyższym wykresie, liczba katastrof lotniczych zmieniała się na przestrzeni lat. Ponadto w związku z długim okresem poddanym analizie oraz ze zmianami zachodzącymi w rzeczywistych procesach związanych z rozwojem lotnictwa, nie jesteśmy w stanie modelować całości danych jednym rozkładem. Jednakowoż możemy wydzielić grupy, pochodzące z krótszych okresów.
+
+```{r subset_data}
+cat_subset <- catastrophes[between(catastrophes$Date, as.Date("1940-01-01"), as.Date("1956-01-01")),]
+
+poisson <- as.data.frame(dpois(15:30, lambda = 24))
+poisson$x <- 1940:1955
+colnames(poisson) <- c("y", "x")
+```
+
+Na poniższym wykresie widzimy, że wypadki pochodzące z okresu 1940-1955. Po dobraniu odpowiedniego parametru lambda=24 dla rozkładu Poissona udało się w przybliżeniu zamodelować wybrany fragment danych.
+
+```{r p_dist, echo=FALSE}
+ggplot(cat_subset, aes(x = Quarters)) +
+  geom_histogram(binwidth = 1) +
+  geom_point(data = poisson, aes(x, y * 1000), color = "red") +
+  scale_y_continuous(
+    name = "Liczba wypadków",
+    sec.axis = sec_axis(trans = ~. * 0.001, name = "Rozkład Poissona")
+  )
+```
+
+### b) Analiza zmiany liczby wypadków na przestrzeni lat
+
+Na podstawie danych pochodzących ze strony https://financesonline.com/number-of-flights-worldwide/ możemy zobaczyć jak zmieniała się ogólna liczba lotów:
+
+```{r flights_data, echo=FALSE}
+flights <- read.csv(file = "./data/number-of-flights-from-2.csv", sep = ";")
+colnames(flights) <- c("Category", "Flights")
+
+ggplot(flights, aes(x = Category, y = Flights)) +
+  geom_point()
+```
+
+Korzystając z faktu, że dla części danych z lat 2004-2009 posiadamy informacje o katastrofach lotniczych, możemy sprawdzić jak zmienieło się bezpieczeństwo lotów.
+
+```{r flights_safety}
+years <- lubridate::year(catastrophes$Date)
+year_catastrophes <- as.data.frame(table(years[years > 2003]))
+year_catastrophes$Flights <- flights[1:6, 2]
+colnames(year_catastrophes) <- c("Year", "Catastrophes", "Flights")
+
+ggplot(year_catastrophes, aes(x = Year, group = 1)) +
+  geom_line(aes(y = Catastrophes), size = 2, color = "blue") +
+  geom_line(aes(y = Flights * 2), size = 2, color = "green") +
+  scale_y_continuous(
+    name = "Katastrofy",
+    sec.axis = sec_axis(trans = ~. * 0.5, name = "Loty w milionach")
+  )
+```
+
+Jak widzimy na powyższym wykresie, wzrost ilości lotów nie jest skorelowany z ilością wypadków. W kolejnych latach da się zauważyć wyraźny wzrost bezpieczeństwa.
 
 
 ## Zadanie 3
